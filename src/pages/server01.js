@@ -56,10 +56,10 @@ const generateAccessToken = async () => {
     });
 
     const data = await response.json();
-    return data.access_token;
+    return data.access_token; 
   } catch (error) {
     console.error("Failed to generate Access Token:", error);
-  }
+  } 
 };
 
 /**
@@ -81,7 +81,7 @@ const createOrder = async (cart) => {
       {
         amount: {
           currency_code: "USD",
-          value: "50.00",
+          value: "150.00",
         },
       },
     ],
