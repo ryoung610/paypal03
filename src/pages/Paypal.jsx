@@ -83,13 +83,14 @@ const Paypal = () => {
           onApprove={async (data, actions) => {
             try {
               const response = await fetch(
-                `/api/orders/${data.orderID}/capture`,
+                `http://localhost:8888/api/orders/${data.orderID}/capture`,
+               // `/api/orders/${data.orderID}/capture`,
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
-                },
+                },console.log("data.orderID", data.orderID),
               );
 
               const orderData = await response.json();

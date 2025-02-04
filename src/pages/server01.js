@@ -4,30 +4,28 @@ import "dotenv/config";
 import path from "path";
 import cors from 'cors';
 
-
 const { PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PORT = 8888 } = process.env;
-const base = "https://api-m.sandbox.paypal.com";
+const base = "https://api-m.sandbox.paypal.com"; // Correct base URL for PayPal
 const app = express();
 
 // host static files
 app.use(express.static("src/pages"));
-app.use(cors({ 
+app.use(cors({
   origin: 'http://localhost:5173',
-  methods: ["GET", "POST", "OPTIONS"], 
+  methods: ["GET", "POST", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true 
+  credentials: true
 }));
 
 // parse post params sent in body in json format
 app.use(express.json());
 
-//new but works in getting the cart in postman
+//Correct endpoint now
 app.post('/api/orders', async (req, res) => {
   try {
     const { cart } = req.body;
     console.log('Request received:', req.body);  // Log request body
 
-    // Assuming createOrder is an async function that returns a Promise
     const order = await createOrder(cart);
     res.json(order);
     console.log('Order created:', order);  // Log order details
@@ -36,22 +34,6 @@ app.post('/api/orders', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while processing the order' });
   }
 });
-
-//original code
-  app.post("/api/orders", async (req, res) => {
-  try {
-   
-    // use the cart information passed from the front-end to calculate the order amount details
-    const { cart } = req.body;
-    const { jsonResponse, httpStatusCode } = await createOrder(cart);
-    res.status(httpStatusCode).json(jsonResponse);
-  } catch (error) {
-    console.error("Failed to create order:", error);
-    res.status(500).json({ error: "Failed to create order." });
-  }
-});
-
-
 
 /**
  * Generate an OAuth 2.0 access token for authenticating with PayPal REST APIs.
@@ -109,11 +91,6 @@ const createOrder = async (cart) => {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
-      // Uncomment one of these to force an error for negative testing (in sandbox mode only). Documentation:
-      // https://developer.paypal.com/tools/sandbox/negative-testing/request-headers/
-      // "PayPal-Mock-Response": '{"mock_application_codes": "MISSING_REQUIRED_PARAMETER"}'
-      // "PayPal-Mock-Response": '{"mock_application_codes": "PERMISSION_DENIED"}'
-      // "PayPal-Mock-Response": '{"mock_application_codes": "INTERNAL_SERVER_ERROR"}'
     },
     method: "POST",
     body: JSON.stringify(payload),
@@ -126,20 +103,15 @@ const createOrder = async (cart) => {
  * Capture payment for the created order to complete the transaction.
  * @see https://developer.paypal.com/docs/api/orders/v2/#orders_capture
  */
-const captureOrder = async (orderID) => {
+const captureOrder = async (orderID) => { //orderID passed in as param
   const accessToken = await generateAccessToken();
-  const url = `${base}/v2/checkout/orders/${orderID}/capture`;
+  const url = `${base}/v2/checkout/orders/${orderID}/capture`; //paypal url
 
   const response = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${accessToken}`,
-      // Uncomment one of these to force an error for negative testing (in sandbox mode only). Documentation:
-      // https://developer.paypal.com/tools/sandbox/negative-testing/request-headers/
-      // "PayPal-Mock-Response": '{"mock_application_codes": "INSTRUMENT_DECLINED"}'
-      // "PayPal-Mock-Response": '{"mock_application_codes": "TRANSACTION_REFUSED"}'
-      // "PayPal-Mock-Response": '{"mock_application_codes": "INTERNAL_SERVER_ERROR"}'
     },
   });
 
@@ -159,15 +131,25 @@ async function handleResponse(response) {
   }
 }
 
-
-
-app.post(" http://localhost:5173/api/orders/:orderID/capture", async (req, res) => {
+//Correct endpoint now
+app.post("/api/orders/:orderId/capture", async (req, res) => {
   try {
-    const { orderID } = req.params;
-    const { jsonResponse, httpStatusCode } = await captureOrder(orderID);
-    res.status(httpStatusCode).json(jsonResponse);
+    const { orderId } = req.params; // Now you are extracting correctly
+    console.log("capture orderID:", orderId);  // Log order ID
+    const { jsonResponse, httpStatusCode } = await captureOrder(orderId);
+
+    // Make sure to handle the response from the captureOrder function correctly
+    if (httpStatusCode === 200 || httpStatusCode === 201) {
+      // If successful, you might want to update your database or perform other actions
+      console.log("Order captured successfully:", jsonResponse);
+      res.status(200).json({ success: true, ...jsonResponse }); // Send the PayPal response back
+    } else {
+      // If not successful, send back the error
+      console.error("Failed to capture order:", jsonResponse);
+      res.status(httpStatusCode).json({ success: false, ...jsonResponse });
+    }
   } catch (error) {
-    console.error("Failed to create order:", error);
+    console.error("Failed to capture order:", error);
     res.status(500).json({ error: "Failed to capture order." });
   }
 });
