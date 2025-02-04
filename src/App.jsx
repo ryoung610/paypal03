@@ -8,6 +8,7 @@ import Navbar from './components/Navbar.jsx'
 import About from './pages/About.jsx'
 import Home from './pages/Home'
 import Products from './pages/Products'
+import Paypal from './pages/Paypal'
 
 
 
@@ -25,6 +26,8 @@ function App() {
           <Route path='/about' element={<About />} />
           <Route path='/products' element={<Products />} />  
           <Route path='/products/:productId' element={<Products />} />
+          <Route path='/paypal' element={<Paypal />} />
+
         </Routes>
       </div>
       <p className="read-the-docs">

@@ -17,6 +17,8 @@ const Navbar = () => {
         <NavLink onClick={()=>setVisible(false)} className = 'linknavbar' to = '/Home' > Home </NavLink>
         <NavLink onClick={()=>setVisible(false)} className = 'linknavbar' to = '/About' > About </NavLink>
         <NavLink onClick={()=>setVisible(false)} className = 'linknavbar' to = '/Products' > Products </NavLink>
+        <NavLink onClick={()=>setVisible(false)} className = 'linknavbar' to = '/Paypal' > Paypal </NavLink>
+
 
     </div>  
 
