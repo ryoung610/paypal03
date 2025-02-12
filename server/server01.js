@@ -9,15 +9,38 @@ const base = "https://api-m.sandbox.paypal.com";
 const app = express();
 
 // host static files
-app.use(express.static("client/dist"));
+app.use(express.static("server"));
 
 // parse post params sent in body in json format
 app.use(express.json());
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ["GET", "POST", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
+}));
 
 /**
  * Generate an OAuth 2.0 access token for authenticating with PayPal REST APIs.
  * @see https://developer.paypal.com/api/rest/authentication/
  */
+
+app.post("/api/orders", async (req, res) => {
+  try {
+    // use the cart information passed from the front-end to calculate the order amount detals
+    const { cart } = req.body;
+    const order = await createOrder(cart);
+    res.json(order);
+
+    //const { jsonResponse, httpStatusCode }
+    //res.status(httpStatusCode).json(jsonResponse);
+  } catch (error) {
+    console.error("Failed to create order:", error);
+    res.status(500).json({ error: "Failed to create order." });
+  }
+});
+
+
 const generateAccessToken = async () => {
   try {
     if (!PAYPAL_CLIENT_ID || !PAYPAL_CLIENT_SECRET) {
@@ -120,18 +143,6 @@ async function handleResponse(response) {
   }
 }
 
-app.post("/api/orders", async (req, res) => {
-  try {
-    // use the cart information passed from the front-end to calculate the order amount detals
-    const { cart } = req.body;
-    const { jsonResponse, httpStatusCode } = await createOrder(cart);
-    res.status(httpStatusCode).json(jsonResponse);
-  } catch (error) {
-    console.error("Failed to create order:", error);
-    res.status(500).json({ error: "Failed to create order." });
-  }
-});
-
 app.post("/api/orders/:orderID/capture", async (req, res) => {
   try {
     const { orderID } = req.params;
@@ -142,6 +153,8 @@ app.post("/api/orders/:orderID/capture", async (req, res) => {
     res.status(500).json({ error: "Failed to capture order." });
   }
 });
+
+
 
 // serve index.html
 app.get("/", (req, res) => {

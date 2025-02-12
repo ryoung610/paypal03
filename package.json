@@ -10,7 +10,7 @@
     "client-preview": "vite preview",
     "lint": "eslint .",
     "start": "concurrently \"npm run client-dev\" \"npm run server-dev\"",
-    "server-dev": "nodemon src/pages/server01.js"
+    "server-dev": "nodemon server/server01.js"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.9.1",

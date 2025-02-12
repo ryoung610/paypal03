@@ -20,7 +20,7 @@ app.use(cors({
 // parse post params sent in body in json format
 app.use(express.json());
 
-//Correct endpoint now
+//Correct endpoint nows 
 app.post('/api/orders', async (req, res) => {
   try {
     const { cart } = req.body;
@@ -81,7 +81,7 @@ const createOrder = async (cart) => {
       {
         amount: {
           currency_code: "USD",
-          value: "150.00",
+          value: "250.00",
         },
       },
     ],

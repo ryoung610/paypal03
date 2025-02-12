@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
-//import server from '../server/server01.js'
 import { useEffect } from 'react';
 import axios from 'axios';
 import cors from 'cors';
@@ -21,9 +20,8 @@ const Paypal = () => {
         "data-sdk-integration-source": "integrationbuilder_sc",
       };
     
-      const [message, setMessage] = useState("");
-    
- 
+      const [message, setMessage] = useState("");    
+      const API_GATEWAY_BASE_URL = 'https://jarhem0s0e.execute-api.us-east-1.amazonaws.com/dev'; // Replace with your actual API Gateway URL
  
     return (
     <div>
@@ -39,7 +37,8 @@ const Paypal = () => {
           }}
           createOrder={async () => {
             try {
-              const response = await fetch("http://localhost:8888/api/orders", {
+             // const response = await fetch("http://localhost:8888/api/orders", {
+               const response = await fetch("API_GATEWAY_BASE_URL", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -83,7 +82,8 @@ const Paypal = () => {
           onApprove={async (data, actions) => {
             try {
               const response = await fetch(
-                `http://localhost:8888/api/orders/${data.orderID}/capture`,
+                'API_GATEWAY_BASE_URL',
+               // `http://localhost:8888/api/orders/${data.orderID}/capture`,
                // `/api/orders/${data.orderID}/capture`,
                 {
                   method: "POST",
