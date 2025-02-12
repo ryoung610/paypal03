@@ -38,7 +38,7 @@ const Paypal = () => {
           createOrder={async () => {
             try {
              // const response = await fetch("http://localhost:8888/api/orders", {
-               const response = await fetch("API_GATEWAY_BASE_URL", {
+              const response = await fetch("API_GATEWAY_BASE_URL", {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
@@ -81,11 +81,9 @@ const Paypal = () => {
           }}
           onApprove={async (data, actions) => {
             try {
-              const response = await fetch(
-                'API_GATEWAY_BASE_URL',
+              const response = await fetch(`${API_GATEWAY_BASE_URL}/orders/${data.orderID}/capture`, {
                // `http://localhost:8888/api/orders/${data.orderID}/capture`,
-               // `/api/orders/${data.orderID}/capture`,
-                {
+               // `/api/orders/${data.orderID}/capture`,      
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
