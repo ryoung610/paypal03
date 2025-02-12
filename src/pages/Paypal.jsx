@@ -53,7 +53,11 @@ const Paypal = () => {
                     },
                   ],
                 }),
-              });
+                
+              }           
+            )
+            console.log('Fetching from:', `${API_GATEWAY_BASE_URL}/orders`);
+
               if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`HTTP Error: ${response.status} - ${errorText}`);
@@ -122,13 +126,17 @@ const Paypal = () => {
                   JSON.stringify(orderData, null, 2),
                 );
               }
-            } catch (error) {
+              console.log('Fetching from:', `${API_GATEWAY_BASE_URL}/orders/${data.orderID}/capture`);
+            } 
+            catch (error) {
               //console.error(error);
               setMessage(
                 `Sorry, your transaction could not be processed...${error}`,
               );
             }
-          }}
+          }
+          
+        }
         />
       </PayPalScriptProvider>
       <Message content={message} />
