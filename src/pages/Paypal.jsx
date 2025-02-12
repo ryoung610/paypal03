@@ -38,7 +38,7 @@ const Paypal = () => {
           createOrder={async () => {
             try {
              // const response = await fetch("http://localhost:8888/api/orders", {
-              const response = await fetch("API_GATEWAY_BASE_URL", {
+              const response = await fetch(`${API_GATEWAY_BASE_URL}/orders`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
