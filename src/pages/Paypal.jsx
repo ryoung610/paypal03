@@ -38,6 +38,7 @@ const Paypal = () => {
           createOrder={async () => {
             try {
              // const response = await fetch("http://localhost:8888/api/orders", {
+                console.log("Creating order...");
               const response = await fetch(`${API_GATEWAY_BASE_URL}/orders`, {
                 method: "POST",
                 headers: {
@@ -56,7 +57,7 @@ const Paypal = () => {
                 
               }           
             )
-            console.log('Fetching from:', `${API_GATEWAY_BASE_URL}/orders`);
+            console.log('Fetching from: ', `${API_GATEWAY_BASE_URL}/orders`);
 
               if (!response.ok) {
                 const errorText = await response.text();
