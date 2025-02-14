@@ -46,10 +46,10 @@ const Paypal = () => {
                 // use the "body" param to optionally pass additional order information
                 // like product ids and quantities
                 body: JSON.stringify({
-                  cart: [
+                  "cart": [
                     {
-                      id: "product1",
-                      quantity: 1,
+                      "id": "product1",
+                      "quantity": 1,
                     },
                   ],
                 }),
